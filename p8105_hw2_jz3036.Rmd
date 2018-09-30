@@ -1,0 +1,12 @@
+---
+title: "p8105_hw2_jz3036"
+output: github_document
+author: "Junyuan Zheng (jz3036)"
+date: 2018-09-30
+---
+
+# Problem 1
+
+## Crea
+
+* 

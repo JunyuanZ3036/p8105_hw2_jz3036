@@ -28,4 +28,39 @@ head(data_p1)
 * The data after cleaning steps includes `r dim(data_p1)[1]` rows and `r dim(data_p1)[2]` columns.
 * As for the column of each variable, I think the data after manipulation is fine. On the other hand, some routes are in charaters and others are in integers, which could be confusing. Besides, since we no longer care about the "entrance location" from original dataset, there are some rows that are identical to others, for which we could probably merge them into one.
 
+```{r}
+distinct_station = distinct(data_p1, station_name, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11)
+```
+* There are __`r nrow(distinct_station)`__ distinct stations.
 
+```{r}
+select_ada = filter(data_p1, ada == TRUE)
+```
+* There are __`r nrow(select_ada)`__ stations that are ADA compliant.
+
+```{r}
+vending_F_entry_T = filter(data_p1, vending == 'NO', entry == TRUE)
+```
+* The proportion of station without vending while allow entrance is __`r nrow(vending_F_entry_T)/nrow(data_p1)`__.
+
+Reformat data so that route number and route name are distinct variables:
+```{r}
+data_p1_re = 
+  gather(data_p1, key = route_number, value = route_name, route1:route11) %>%
+  separate(., route_number, into = c('route', 'route_number'), sep = "e") %>%
+  select(., -'route')
+```
+
+```{r}
+distinct_station_A =
+  filter(data_p1_re, route_name == 'A') %>%
+  distinct(., station_name)
+```
+* There are `r nrow(distinct_station_A)` distinct stations serve the A train.
+
+```{r}
+distinct_station_A_ada = filter(data_p1_re, route_name == 'A', ada == 'TRUE')
+```
+* There are `r nrow(distinct_station_A_ada)` stations serve the A train and ADA compliant.
+
+# Problem 2

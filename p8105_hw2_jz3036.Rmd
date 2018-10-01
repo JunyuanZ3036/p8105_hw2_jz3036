@@ -5,8 +5,24 @@ author: "Junyuan Zheng (jz3036)"
 date: 2018-09-30
 ---
 
+* Import necessary packages.
+```{r import_packages}
+library(tidyverse)
+```
+
+
 # Problem 1
 
-## Crea
+* Import the raw data for Problem 1.
+```{r data_import}
+data_p1 = 
+  read_csv(file='./raw_data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv') %>%
+  janitor::clean_names(.) %>%
+  select(., line:entry, vending, ada) %>%
+  mutate(., entry = recode(entry, YES = TRUE, NO = FALSE))
+head(data_p1)
+```
 
-* 
+* Variables in the original dataset include division, line, station name, route1-7, entrance type, entry, exit only, vending, staffing, staff hours, ada_notes, north south street, east west street, corner and station location in __characters__; station latitude longitude, entrance latitude longitude in __double__; route8-11 in __integer__; ada, free crossover in __logical__ variable.
+
+`r dim(data_p1)[1]`

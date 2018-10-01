@@ -8,13 +8,14 @@ date: 2018-09-30
 * Import necessary packages.
 ```{r import_packages}
 library(tidyverse)
+library(readxl)
 ```
 
 
 # Problem 1
 
 * Import the raw data for Problem 1.
-```{r data_import}
+```{r data_import_p1}
 data_p1 = 
   read_csv(file='./raw_data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv') %>%
   janitor::clean_names(.) %>%
@@ -26,7 +27,7 @@ head(data_p1)
 * Variables in the original dataset include division, line, station name, route1-7, entrance type, entry, exit only, vending, staffing, staff hours, ada_notes, north south street, east west street, corner and station location in __characters__; station latitude longitude, entrance latitude longitude in __double__; route8-11 in __integer__; ada, free crossover in __logical__ variable.
 * As the pipeline shown above, after importing the raw data, I use the __janitor::clean_names()__ function to change the column names into snake-shape. Then use the __select()__ function to select columns required. Finally, use the __mutate()__ and __recode()__ function to change the "entry" column into logical variable.
 * The data after cleaning steps includes `r dim(data_p1)[1]` rows and `r dim(data_p1)[2]` columns.
-* As for the column of each variable, I think the data after manipulation is fine. On the other hand, some routes are in charaters and others are in integers, which could be confusing. Besides, since we no longer care about the "entrance location" from original dataset, there are some rows that are identical to others, for which we could probably merge them into one.
+* As for the column of each variable, I think the data after manipulation is fine, barring route1-11 could potentially be gethered into one route column with route number 1-11. On the other hand, some routes are in charaters and others are in integers, which could be confusing. Besides, since we no longer care about the "entrance location" from original dataset, there are some rows that are identical to others, for which we could probably merge them into one.
 
 ```{r}
 distinct_station = distinct(data_p1, station_name, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11)
@@ -56,11 +57,60 @@ distinct_station_A =
   filter(data_p1_re, route_name == 'A') %>%
   distinct(., station_name)
 ```
-* There are `r nrow(distinct_station_A)` distinct stations serve the A train.
+* There are __`r nrow(distinct_station_A)`__ distinct stations serve the A train.
 
 ```{r}
 distinct_station_A_ada = filter(data_p1_re, route_name == 'A', ada == 'TRUE')
 ```
-* There are `r nrow(distinct_station_A_ada)` stations serve the A train and ADA compliant.
+* There are __`r nrow(distinct_station_A_ada)`__ stations serve the A train and ADA compliant.
 
 # Problem 2
+
+* Read and clean the Mr. Trash Wheel sheet:
+* For data import of problem2 blow, after filtering out rows that have NA in the dumpster column, there were still one row of 'Grand Total' at last. I think it'd be tidier not having that row.
+```{r data_import_p2}
+data_p2 = 
+  read_excel('./raw_data/HealthyHarborWaterWheelTotals2017-9-26.xlsx', sheet = 1, range = cell_cols("A:N")) %>% 
+  janitor::clean_names(.) %>%
+  filter(., !is.na(dumpster), month != 'Grand Total') %>% 
+  mutate(., sports_balls = round(sports_balls), sports_balls = as.integer(sports_balls))
+head(data_p2, 5)
+```
+
+* Read and clean precipitation data for 2016 and 2017:
+* Omit rows without precipitation data and add a variable year.
+```{r import_precipitation_2016}
+precip_2016 = 
+  read_excel('./raw_data/HealthyHarborWaterWheelTotals2017-9-26.xlsx', sheet = 4, range = "A2:B15") %>% 
+  janitor::clean_names(.) %>%
+  filter(., !is.na(month), !is.na(total)) %>%
+  mutate(., year = '2016')
+precip_2016
+```
+```{r import_precipitation_2017}
+precip_2017 = 
+  read_excel('./raw_data/HealthyHarborWaterWheelTotals2017-9-26.xlsx', sheet = 3, range = "A2:B15") %>% 
+  janitor::clean_names(.) %>%
+  filter(., !is.na(month), !is.na(total)) %>%
+  mutate(., year = '2017')
+precip_2017
+```
+
+* Combine datasets and convert month to a character variable (using month.name[]):
+```{r combine_16_17}
+comb_16_17 = 
+  bind_rows(precip_2016, precip_2017) %>% 
+  mutate(., month = month.name[month]) %>% 
+  select(., year, month, total)
+comb_16_17
+```
+
+* what was the total precipitation in 2017?
+```{r total_precip_2017}
+total_precip_2017 = 
+  filter(comb_16_17, year == 2017) %>%
+  .$total %>% 
+  sum(.)
+```
+* 
+

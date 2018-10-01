@@ -29,37 +29,37 @@ head(data_p1)
 * The data after cleaning steps includes `r dim(data_p1)[1]` rows and `r dim(data_p1)[2]` columns.
 * As for the column of each variable, I think the data after manipulation is fine, barring route1-11 could potentially be gethered into one route column with route number 1-11. On the other hand, some routes are in charaters and others are in integers, which could be confusing. Besides, since we no longer care about the "entrance location" from original dataset, there are some rows that are identical to others, for which we could probably merge them into one.
 
-```{r}
+```{r diff_station}
 distinct_station = distinct(data_p1, station_name, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11)
 ```
 * There are __`r nrow(distinct_station)`__ distinct stations.
 
-```{r}
+```{r ada_T}
 select_ada = filter(data_p1, ada == TRUE)
 ```
 * There are __`r nrow(select_ada)`__ stations that are ADA compliant.
 
-```{r}
+```{r vending_N_entry_T}
 vending_F_entry_T = filter(data_p1, vending == 'NO', entry == TRUE)
 ```
 * The proportion of station without vending while allow entrance is __`r nrow(vending_F_entry_T)/nrow(data_p1)`__.
 
 Reformat data so that route number and route name are distinct variables:
-```{r}
+```{r gathering}
 data_p1_re = 
   gather(data_p1, key = route_number, value = route_name, route1:route11) %>%
   separate(., route_number, into = c('route', 'route_number'), sep = "e") %>%
   select(., -'route')
 ```
 
-```{r}
+```{r count_diff}
 distinct_station_A =
   filter(data_p1_re, route_name == 'A') %>%
   distinct(., station_name)
 ```
 * There are __`r nrow(distinct_station_A)`__ distinct stations serve the A train.
 
-```{r}
+```{r route_A_ada_T}
 distinct_station_A_ada = filter(data_p1_re, route_name == 'A', ada == 'TRUE')
 ```
 * There are __`r nrow(distinct_station_A_ada)`__ stations serve the A train and ADA compliant.
@@ -105,12 +105,23 @@ comb_16_17 =
 comb_16_17
 ```
 
-* what was the total precipitation in 2017?
+* For the Mr. Trash Wheel dataset, there are __`r nrow(data_p2)` rows (observations)__, __`r ncol(data_p2)` columns (variables)__ in it. One main part of the data includes that during which time the data were collected, in which the __data__ variable is not that tidy partly containing info that're already in the __month__ and __year__ variables. The other big chunk of the data is about different types of trash it collected, including __plastic_bottles__, __polystyrene__, __cigarette_butts__, etc.
+* For precipitation data for 2016 and 2017, there are __`r nrow(comb_16_17)` rows (observations) recorded__, variables including __year__, __month__, and __total__ (precipitation). 2017 only have 8 month as far recorded.
+
+what was the total precipitation in 2017?
 ```{r total_precip_2017}
 total_precip_2017 = 
   filter(comb_16_17, year == 2017) %>%
   .$total %>% 
   sum(.)
 ```
-* 
+* The total precipitation in 2017 is __`r total_precip_2017`__.
 
+What was the median number of sports balls in a dumpster in 2016?
+```{r median_balls_2016}
+median_balls_2016 = 
+  filter(data_p2, year == 2016) %>%
+  .$sports_balls %>%
+  median(.)
+```
+* The median number of sports balls in a dumpster in 2016 is __`r median_balls_2016`__.

@@ -147,4 +147,17 @@ data_p3 =
 head(data_p3)
 ```
 
-* 
+How many unique locations are included in the dataset? Is every state represented? What state is observed the most?
+```{r distinct_loc}
+distinct_loc = distinct(data_p3, locationdesc)
+```
+* There are __`r nrow(distinct_loc)`__ distinct locations.
+```{r distinct_state}
+distinct_state = distinct(data_p3, locationabbr)
+```
+* There are __`r nrow(distinct_state)`__ distinct states represented, which includes 50 states as well as Washington DC.
+```{r}
+sort(table(data_p3$locationabbr), decreasing=TRUE) 
+```
+* from the result above, we can see New Jersey is observed most
+

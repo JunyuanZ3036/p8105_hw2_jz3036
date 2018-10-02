@@ -30,7 +30,7 @@ head(data_p1)
 * As for the column of each variable, I think the data after manipulation is fine, barring route1-11 could potentially be gethered into one route column with route number 1-11. On the other hand, some routes are in charaters and others are in integers, which could be confusing. Besides, since we no longer care about the "entrance location" from original dataset, there are some rows that are identical to others, for which we could probably merge them into one.
 
 ```{r diff_station}
-distinct_station = distinct(data_p1, station_name, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11)
+distinct_station = distinct(data_p1, station_name, line)
 ```
 * There are __`r nrow(distinct_station)`__ distinct stations.
 

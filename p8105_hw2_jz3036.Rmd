@@ -156,8 +156,43 @@ distinct_loc = distinct(data_p3, locationdesc)
 distinct_state = distinct(data_p3, locationabbr)
 ```
 * There are __`r nrow(distinct_state)`__ distinct states represented, which includes 50 states as well as Washington DC.
-```{r}
+```{r state_apperance}
 sort(table(data_p3$locationabbr), decreasing=TRUE) 
 ```
-* from the result above, we can see New Jersey is observed most
+* From the result above, we can see New Jersey is observed most
+
+```{r median_excellent_2002}
+median_excellent_02 = 
+  filter(data_p3, year == 2002) %>%
+  .$excellent
+```
+* In 2002, the median of the “Excellent” response is __`r median(median_excellent_02, na.rm = TRUE)`__
+
+Make a histogram of “Excellent” response values in the year 2002:
+```{r histogram}
+data_p3_2002 = filter(data_p3, year == 2002)
+ggplot(data_p3_2002, aes(x = excellent)) + 
+  geom_histogram(binwidth = 1, color="white", fill="lightblue") +
+  labs(title="“Excellent” response values in 2002", 
+       x="Excellent (percentage)", y="Frequency") +
+  scale_x_continuous(breaks = seq(0, 50, 5))
+```
+
+Make a scatterplot showing the proportion of “Excellent” response values in New York County and Queens County (both in NY State) in each year from 2002 to 2010:
+```{r scatterplot}
+scatter_data_NYC = 
+  filter(data_p3, year <= 2010, locationdesc == 'NY - New York County')
+scatter_data_QC = 
+  filter(data_p3, year <= 2010, locationdesc == 'NY - Queens County')
+
+scatter_data = 
+  full_join(scatter_data_NYC, scatter_data_QC, by = "year") %>%
+  janitor::clean_names(.)
+
+ggplot(scatter_data, aes(x = excellent_x, y = excellent_y)) + 
+  geom_point(aes(color = year) ) +
+  labs(title="“Excellent” response in New York County and Queens County from 2002-2010", 
+       x="New York County", y="Queens County") +
+  geom_text(aes(label=year),hjust=0.5, vjust=1.5)
+```
 

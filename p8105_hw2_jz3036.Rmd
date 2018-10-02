@@ -180,19 +180,15 @@ ggplot(data_p3_2002, aes(x = excellent)) +
 
 Make a scatterplot showing the proportion of “Excellent” response values in New York County and Queens County (both in NY State) in each year from 2002 to 2010:
 ```{r scatterplot}
-scatter_data_NYC = 
-  filter(data_p3, year <= 2010, locationdesc == 'NY - New York County')
-scatter_data_QC = 
-  filter(data_p3, year <= 2010, locationdesc == 'NY - Queens County')
-
 scatter_data = 
-  full_join(scatter_data_NYC, scatter_data_QC, by = "year") %>%
-  janitor::clean_names(.)
+  filter(data_p3, year <= 2010,
+         locationdesc == 'NY - New York County' | locationdesc == 'NY - Queens County')
 
-ggplot(scatter_data, aes(x = excellent_x, y = excellent_y)) + 
-  geom_point(aes(color = year) ) +
+ggplot(scatter_data, aes(x = year, y = excellent)) + 
+  geom_point(aes(color = locationdesc) ) +
   labs(title="“Excellent” response in New York County and Queens County from 2002-2010", 
-       x="New York County", y="Queens County") +
-  geom_text(aes(label=year),hjust=0.5, vjust=1.5)
+       x="year", y="Proportion") +
+  geom_smooth(se = FALSE, aes(color = locationdesc, ))
+ # geom_text(aes(label=year),hjust=0.5, vjust=1.5)
 ```
 

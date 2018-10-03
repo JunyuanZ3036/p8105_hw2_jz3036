@@ -21,7 +21,7 @@ data_p1 =
   janitor::clean_names(.) %>%
   select(., line:entry, vending, ada) %>%
   mutate(., entry = recode(entry, YES = TRUE, NO = FALSE))
-head(data_p1)
+head(data_p1, 3)
 ```
 
 * Variables in the original dataset include division, line, station name, route1-7, entrance type, entry, exit only, vending, staffing, staff hours, ada_notes, north south street, east west street, corner and station location in __characters__; station latitude longitude, entrance latitude longitude in __double__; route8-11 in __integer__; ada, free crossover in __logical__ variable.
@@ -50,6 +50,7 @@ data_p1_re =
   gather(data_p1, key = route_number, value = route_name, route1:route11) %>%
   separate(., route_number, into = c('route', 'route_number'), sep = "e") %>%
   select(., -'route')
+head(data_p1_re, 3)
 ```
 
 ```{r count_diff}
@@ -85,7 +86,7 @@ precip_2016 =
   janitor::clean_names(.) %>%
   filter(., !is.na(month), !is.na(total)) %>%
   mutate(., year = '2016')
-precip_2016
+head(precip_2016, 3)
 ```
 ```{r import_precipitation_2017}
 precip_2017 = 
@@ -93,7 +94,7 @@ precip_2017 =
   janitor::clean_names(.) %>%
   filter(., !is.na(month), !is.na(total)) %>%
   mutate(., year = '2017')
-precip_2017
+head(precip_2017, 3)
 ```
 
 * Combine datasets and convert month to a character variable (using month.name[]):
@@ -102,7 +103,7 @@ comb_16_17 =
   bind_rows(precip_2016, precip_2017) %>% 
   mutate(., month = month.name[month]) %>% 
   select(., year, month, total)
-comb_16_17
+head(comb_16_17, 3)
 ```
 
 * For the Mr. Trash Wheel dataset, there are __`r nrow(data_p2)` rows (observations)__, __`r ncol(data_p2)` columns (variables)__ in it. One main part of the data includes that during which time the data were collected, in which the __data__ variable is not that tidy partly containing info that're already in the __month__ and __year__ variables. The other big chunk of the data is about different types of trash it collected, including __plastic_bottles__, __polystyrene__, __cigarette_butts__, etc.
@@ -144,7 +145,7 @@ data_p3 =
   janitor::clean_names(.) %>% 
   select(., year:locationdesc, poor, fair, good, very_good, excellent) %>% 
   mutate(., verygood_excellent_prop = very_good + excellent)
-head(data_p3)
+head(data_p3, 3)
 ```
 
 How many unique locations are included in the dataset? Is every state represented? What state is observed the most?
@@ -159,7 +160,7 @@ distinct_state = distinct(data_p3, locationabbr)
 ```{r state_apperance}
 sort(table(data_p3$locationabbr), decreasing=TRUE) 
 ```
-* From the result above, we can see New Jersey is observed most
+* From the result above, we can see __New Jersey__ is observed most
 
 ```{r median_excellent_2002}
 median_excellent_02 = 
@@ -188,7 +189,7 @@ ggplot(scatter_data, aes(x = year, y = excellent)) +
   geom_point(aes(color = locationdesc) ) +
   labs(title="“Excellent” response in New York County and Queens County from 2002-2010", 
        x="year", y="Proportion") +
-  geom_smooth(se = FALSE, aes(color = locationdesc, ))
+  geom_smooth(se = FALSE, aes(color = locationdesc))
  # geom_text(aes(label=year),hjust=0.5, vjust=1.5)
 ```
 

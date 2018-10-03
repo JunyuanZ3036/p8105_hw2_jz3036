@@ -190,6 +190,5 @@ ggplot(scatter_data, aes(x = year, y = excellent)) +
   labs(title="“Excellent” response in New York County and Queens County from 2002-2010", 
        x="year", y="Proportion") +
   geom_smooth(se = FALSE, aes(color = locationdesc))
- # geom_text(aes(label=year),hjust=0.5, vjust=1.5)
 ```
 

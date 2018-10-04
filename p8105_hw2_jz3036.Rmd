@@ -71,7 +71,7 @@ distinct_station_A_ada = filter(data_p1_re, route_name == 'A', ada == 'TRUE')
 * For data import of problem2 blow, after filtering out rows that have NA in the dumpster column, there were still one row of 'Grand Total' at last. I think it'd be tidier not having that row.
 ```{r data_import_p2}
 data_p2 = 
-  read_excel('./raw_data/HealthyHarborWaterWheelTotals2017-9-26.xlsx', sheet = 1, range = cell_cols("A:N")) %>% 
+  read_excel('./raw_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx', sheet = 1, range = cell_cols("A:N")) %>% 
   janitor::clean_names(.) %>%
   filter(., !is.na(dumpster), month != 'Grand Total') %>% 
   mutate(., sports_balls = round(sports_balls), sports_balls = as.integer(sports_balls))
@@ -82,7 +82,7 @@ head(data_p2, 5)
 * Omit rows without precipitation data and add a variable year.
 ```{r import_precipitation_2016}
 precip_2016 = 
-  read_excel('./raw_data/HealthyHarborWaterWheelTotals2017-9-26.xlsx', sheet = 4, range = "A2:B15") %>% 
+  read_excel('./raw_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx', sheet = 5, range = "A2:B15") %>% 
   janitor::clean_names(.) %>%
   filter(., !is.na(month), !is.na(total)) %>%
   mutate(., year = '2016')
@@ -90,7 +90,7 @@ head(precip_2016, 3)
 ```
 ```{r import_precipitation_2017}
 precip_2017 = 
-  read_excel('./raw_data/HealthyHarborWaterWheelTotals2017-9-26.xlsx', sheet = 3, range = "A2:B15") %>% 
+  read_excel('./raw_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx', sheet = 4, range = "A2:B15") %>% 
   janitor::clean_names(.) %>%
   filter(., !is.na(month), !is.na(total)) %>%
   mutate(., year = '2017')
